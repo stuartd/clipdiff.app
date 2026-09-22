@@ -11,8 +11,58 @@
   </head>
   <body>
     <main id="main">
-      <h1>ClipDiff</h1>
+      <header>
+        <h1>ClipDiff</h1>
+        <p class="intro">Compare copied text and files on Windows and Mac.</p>
+      </header>
       <p id="platform-status" role="status">Couldn’t determine your platform.</p>
+      <fieldset id="platform-picker" hidden>
+        <legend>Choose your version</legend>
+        <div class="platform-options">
+          <label><input type="radio" name="version" value="windows"> Windows</label>
+          <label><input type="radio" name="version" value="mac"> Mac</label>
+        </div>
+      </fieldset>
+      <p id="content-status" role="status"></p>
+      <button id="retry-content" type="button" hidden>Try again</button>
+
+      <article id="platform-content" hidden aria-labelledby="platform-title">
+        <h2 id="platform-title" data-content="title"></h2>
+        <p data-content="description"></p>
+        <p class="requirements" data-content="requirements"></p>
+        <a id="project-link" class="project-link"></a>
+
+        <section aria-labelledby="workflow-title">
+          <h3 id="workflow-title">How to compare</h3>
+          <ol id="workflow-steps"></ol>
+          <p>Default shortcut: <kbd data-content="shortcut"></kbd></p>
+          <p>You can change the shortcut in the ClipDiff menu.</p>
+        </section>
+        <section aria-labelledby="files-title">
+          <h3 id="files-title">Comparing files</h3>
+          <p data-content="files"></p>
+        </section>
+        <section aria-labelledby="viewers-title">
+          <h3 id="viewers-title">Choose your diff viewer</h3>
+          <p data-content="viewers"></p>
+        </section>
+        <section aria-labelledby="setup-title">
+          <h3 id="setup-title">Getting started</h3>
+          <p data-content="setup"></p>
+        </section>
+      </article>
+
+      <section class="privacy" aria-labelledby="privacy-title">
+        <h2 id="privacy-title">Your comparisons stay on your computer</h2>
+        <p>ClipDiff keeps the two captured values in memory and never uploads them.
+          Its built-in viewer works in memory. External viewers use temporary files,
+          with a warning before the first external comparison.</p>
+      </section>
+      <noscript><p>Enable JavaScript for platform-specific instructions, or visit either project below.</p></noscript>
+      <footer>
+        <a href="https://github.com/stuartd/ClipboardDiff">Windows on GitHub</a>
+        <a href="https://github.com/stuartd/MacClipboardDiff">Mac on GitHub</a>
+      </footer>
     </main>
   </body>
 </html>

@@ -1,1 +1,17 @@
-{}
+{
+  "name": "Windows",
+  "title": "ClipDiff for Windows",
+  "description": "Compare the last two things you copied, from a small app in your notification area.",
+  "requirements": "Windows 10 version 1809 or later, or Windows 11. The Windows build is for x64.",
+  "shortcut": "Ctrl + Alt + D",
+  "steps": [
+    "Start ClipDiff. It appears in the notification area.",
+    "Copy the older text or text file, then copy the newer one.",
+    "Press Ctrl + Alt + D, or choose Show Diff from the ClipDiff menu."
+  ],
+  "files": "Copy two files together in Explorer to compare them immediately. You can also use Explorer’s context menu to compare two selected files, or compare one file with your current capture. On Windows 11, look under Show more options.",
+  "viewers": "Use the built-in side-by-side or unified view, or choose an installed viewer such as WinMerge, Beyond Compare, or Visual Studio Code.",
+  "setup": "Extract the full release ZIP and keep ClipDiff.exe beside ClipDiff.ShellExtension.dll. The self-contained download includes its runtime; the smaller net10 download requires the x64 .NET 10 Desktop Runtime.",
+  "projectUrl": "https://github.com/stuartd/ClipboardDiff",
+  "projectLabel": "Windows project on GitHub"
+}

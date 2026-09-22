@@ -1,1 +1,17 @@
-{}
+{
+  "name": "Mac",
+  "title": "ClipDiff for Mac",
+  "description": "Compare the last two things you copied, from a small app in your menu bar.",
+  "requirements": "macOS 13 Ventura or later.",
+  "shortcut": "⌥ + ⌘ + C",
+  "steps": [
+    "Start ClipDiff. It appears in the menu bar.",
+    "Copy the older text or text file, then copy the newer one.",
+    "Press Option + Command + C, or choose Show Diff from the ClipDiff menu."
+  ],
+  "files": "Copy two files together in Finder to compare them immediately. For Finder context-menu commands, choose Enable Finder menu in ClipDiff and enable ClipDiff Finder Integration in System Settings.",
+  "viewers": "Use the built-in side-by-side or unified view, or choose another application, including MacDiff, Kaleidoscope, Beyond Compare, or Visual Studio Code.",
+  "setup": "See the Mac project for build and setup instructions. The local release script builds ClipDiff.app and opens it. Finder integration is enabled separately in System Settings.",
+  "projectUrl": "https://github.com/stuartd/MacClipboardDiff",
+  "projectLabel": "Mac project on GitHub"
+}
