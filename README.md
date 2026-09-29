@@ -1,54 +1,115 @@
 # clipdiff.app
 
-The ClipDiff website, built with plain HTML, CSS, and JavaScript. No framework,
-package installation, or build step.
+The ClipDiff website: plain HTML and JavaScript, with Tailwind compiled to a
+local CSS file. No framework, browser-side dependencies, CDN, or content fetches.
+All three pages are complete HTML and work without JavaScript.
 
-## Structure
+## Preview
 
-```text
-index.html             Shared page structure for every platform
-assets/
-  images/              App icons, screenshots, and other images
-  styles/
-    main.css           Shared styles and responsive layout
-  scripts/
-    main.js            Detects the platform and renders the selected content
-    platform.js        Browser platform detection
-content/
-  windows.json         Windows content, using the shared content structure
-  mac.json             Mac content, using the same structure
-```
-
-Both content files use the same fields: `name`, `title`, `description`,
-`requirements`, `shortcut`, `steps`, `files`, `viewers`, `setup`, `projectUrl`,
-and `projectLabel`. Edit them to change platform-specific copy; edit
-`index.html` to change the shared structure. Shared privacy text stays in HTML.
-
-## Platform detection
-
-On page load, the site detects Windows, Mac, iOS (including iPadOS), Linux,
-or unknown. The result appears on the page and in the HTML element's
-`data-platform` attribute as `windows`, `mac`, `ios`, `linux`, or `unknown`.
-
-Detection uses browser Client Hints when available, then user-agent and
-platform signals. Android and ChromeOS return unknown rather than desktop
-Linux. Detection is best effort: browsers can conceal or spoof their platform.
-See [MDN's browser detection guidance](https://developer.mozilla.org/en-US/docs/Web/HTTP/Browser_detection_using_the_user_agent).
-
-Windows and Mac visitors automatically see the matching content. iOS, Linux,
-and unknown visitors are asked to choose a version. Everyone can switch using
-the Windows/Mac controls. Selection updates the existing page without navigation
-or storage; `data-content-platform` records the displayed version separately
-from the detected platform. Failed content requests offer a retry and the
-GitHub links remain available even without JavaScript.
-
-## Local preview
-
-From this folder, run:
+The generated pages and stylesheet are checked in. To preview them without
+installing anything:
 
 ```sh
-python3 -m http.server 8000 --bind 127.0.0.1
+node scripts/serve.mjs
 ```
 
-Then open <http://localhost:8000>. Use an HTTP server rather than opening the
-HTML file directly so the content files can be loaded later.
+Open <http://127.0.0.1:8000>. The front page redirects Windows and Mac browsers
+to their platform pages. Use <http://127.0.0.1:8000/?choose=1> to view the overview
+on any device. Set `PORT=8080` if port 8000 is occupied.
+
+You can also use `python3 -m http.server 8000 --bind 127.0.0.1`.
+
+## Edit and build
+
+Node.js 22 or later is recommended for development.
+
+```sh
+npm ci
+npm run build
+npm test
+npm run preview
+```
+
+`npm run build` renders the HTML from the shared template and platform content,
+then compiles Tailwind. Run it after editing copy or styles. `npm run css:watch`
+rebuilds only the stylesheet as you edit; reload the browser to see changes.
+
+```text
+templates/page.html       Shared page shell, intro layout, About, footer
+scripts/build.mjs         Shared prose, page sections, placeholder diff example
+content/windows.json      Windows copy, shortcut, requirements, and source links
+content/mac.json          Mac copy, shortcut, requirements, and source links
+assets/styles/source.css  Tailwind source and reusable styles
+assets/styles/main.css    Generated production CSS
+assets/scripts/main.js    Routing entry point and example view/copy controls
+assets/scripts/platform.js  Pure platform detection and redirect policy
+assets/images/            Real app icons; future screenshots
+index.html                Generated overview / platform choice
+windows/index.html        Generated Windows page
+mac/index.html            Generated Mac page
+scripts/serve.mjs          Local preview server, bound to loopback only
+tests/                    Routing, static content, and internal-link checks
+```
+
+Edit the sources, not the generated HTML/CSS. Platform JSON is trusted local
+content; `fileSetup` supports inline HTML for menu labels. Other copy fields are
+escaped when rendered. Shared prose stays in the template/build script.
+
+Tailwind uses the [official CLI workflow](https://tailwindcss.com/docs/installation/tailwind-cli).
+Only the generated CSS is served to visitors. Dependency versions are recorded
+in `package-lock.json`.
+
+## Routing
+
+- `/` and `/index.html` detect desktop Windows or Mac and use `location.replace`
+  to navigate to `/windows/` or `/mac/`. The query string and section anchor survive.
+- iPhone, iPad (including desktop mode), Android, ChromeOS, Linux, and unknown
+  browsers keep the overview and its two platform choices.
+- Explicit platform pages never redirect. Every page has ordinary platform links.
+- `?choose=1` suppresses detection; the logo and footer link back to this overview.
+- No choice is stored in cookies or local storage. Browser detection is best effort.
+- Without JavaScript, the overview and both platform pages still contain all their
+  content and working links. The illustrative diff stays in side-by-side view.
+- All local links are relative, so the site can also be served in a subdirectory.
+
+## Placeholder images and installation
+
+At the author's request, screenshots are deferred. Each page currently has an
+explicitly labelled, illustrative configuration diff; it is not an app screenshot.
+Its side-by-side/unified controls and copy button work with JavaScript. The copy
+button writes only the fixed example diff and never reads the clipboard. A denied
+clipboard write shows a manual-copy message.
+
+To replace a platform placeholder, add the real screenshot under `assets/images/`
+and set that platform's `screenshot` field to:
+
+```json
+{
+  "src": "assets/images/mac-diff.png",
+  "alt": "ClipDiff for Mac comparing settings.json, with timeout and retry changes",
+  "width": 1200,
+  "height": 640,
+  "caption": "The built-in Mac viewer. Previous on the left, current on the right."
+}
+```
+
+Use the actual image dimensions. Installation links point to the respective
+repository instructions; direct download links remain deferred. The About
+section links to the author's supplied URL, <https://stuartd.dev>.
+
+## Hosting
+
+Serve `index.html`, `windows/`, `mac/`, and `assets/` on any static host with
+standard directory-index support. No SPA rewrites, server application, or build
+service are required. Do not publish `node_modules/`, tests, or source tooling.
+
+## Checks
+
+`npm test` covers desktop/mobile platform signals, the iPad-as-Mac edge case,
+manual selection, redirect anchors and queries, subdirectory hosting, complete
+static content, unique IDs, internal asset/anchor links, and platform-specific
+instructions. Run `npm run build` first so the tests inspect current output.
+
+For visual changes, check all three pages at desktop and narrow widths, keyboard
+focus and section links, and the example view/copy controls. The example's split
+view scrolls horizontally on small screens rather than shrinking its text.

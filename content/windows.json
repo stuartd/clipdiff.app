@@ -1,17 +1,21 @@
 {
   "name": "Windows",
   "title": "ClipDiff for Windows",
-  "description": "Compare the last two things you copied, from a small app in your notification area.",
-  "requirements": "Windows 10 version 1809 or later, or Windows 11. The Windows build is for x64.",
-  "shortcut": "Ctrl + Alt + D",
-  "steps": [
-    "Start ClipDiff. It appears in the notification area.",
-    "Copy the older text or text file, then copy the newer one.",
-    "Press Ctrl + Alt + D, or choose Show Diff from the ClipDiff menu."
-  ],
-  "files": "Copy two files together in Explorer to compare them immediately. You can also use Explorer’s context menu to compare two selected files, or compare one file with your current capture. On Windows 11, look under Show more options.",
-  "viewers": "Use the built-in side-by-side or unified view, or choose an installed viewer such as WinMerge, Beyond Compare, or Visual Studio Code.",
-  "setup": "Extract the full release ZIP and keep ClipDiff.exe beside ClipDiff.ShellExtension.dll. The self-contained download includes its runtime; the smaller net10 download requires the x64 .NET 10 Desktop Runtime.",
+  "location": "notification area",
+  "requirements": "Windows 10 (1809+) or Windows 11 · x64",
+  "shortcut": ["Ctrl", "Alt", "D"],
+  "shortcutName": "Ctrl + Alt + D",
+  "fileManager": "Explorer",
+  "executable": "ClipDiff.exe",
+  "setup": "The Windows repository has the current install and update instructions. Extract the whole release ZIP and keep ClipDiff.exe beside ClipDiff.ShellExtension.dll. The self-contained build includes its .NET runtime.",
+  "installAnchor": "install-or-update",
+  "fileSetup": "ClipDiff adds the Explorer commands while it is running and <strong>Monitor Clipboard</strong> is enabled. On Windows 11, look under <strong>Show more options</strong>.",
+  "singleFile": "The command appears once ClipDiff has a current capture. Clearing that capture removes the command; pausing or quitting removes both Explorer commands.",
+  "twoFiles": "ClipDiff must already be running and monitoring. No previous capture is needed, and no administrator setup is required.",
+  "viewers": "WinMerge, Beyond Compare, Meld, or Visual Studio Code",
+  "shortcutMenu": "Keyboard shortcut...",
+  "copyMenu": "Copy unified diff",
   "projectUrl": "https://github.com/stuartd/ClipboardDiff",
-  "projectLabel": "Windows project on GitHub"
+  "privacyAnchor": "privacy-model-and-limitations",
+  "screenshot": null
 }

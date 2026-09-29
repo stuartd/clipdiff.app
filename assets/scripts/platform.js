@@ -1,8 +1,4 @@
-/**
- * Best-effort detection for choosing site content, not a capability check.
- * Browsers can hide or override these signals; unknown is a valid result.
- * @returns {'windows' | 'mac' | 'ios' | 'linux' | 'unknown'}
- */
+/** Best-effort routing only. The platform links always remain available. */
 export function detectPlatform(browser = globalThis.navigator) {
   if (!browser) return 'unknown';
 
@@ -10,32 +6,30 @@ export function detectPlatform(browser = globalThis.navigator) {
   const userAgent = browser.userAgent || '';
   const platform = browser.platform || '';
 
-  // Prefer explicit Client Hints where supported. Do not treat Android or
-  // ChromeOS as desktop Linux just because their user agent mentions Linux.
-  if (hint) {
-    return {
-      windows: 'windows',
-      macos: 'mac',
-      ios: 'ios',
-      linux: 'linux',
-    }[hint] || 'unknown';
-  }
-
+  // Mobile checks precede desktop hints: iPads can report a Mac platform.
   if (/Android|CrOS|Windows Phone/i.test(userAgent)) return 'unknown';
-
-  // iPadOS can identify as a Mac when requesting desktop websites.
   if (/iPhone|iPad|iPod/i.test(`${userAgent} ${platform}`)
-      || (/Mac/i.test(platform || userAgent) && browser.maxTouchPoints > 1)) {
+      || (/Mac/i.test(`${platform} ${userAgent}`) && browser.maxTouchPoints > 1)) {
     return 'ios';
   }
 
-  if (/Windows/i.test(userAgent)) return 'windows';
-  if (/Macintosh|Mac OS X/i.test(userAgent)) return 'mac';
-  if (/Linux/i.test(userAgent)) return 'linux';
-
-  if (/^Win/i.test(platform)) return 'windows';
-  if (/^Mac/i.test(platform)) return 'mac';
-  if (/^Linux/i.test(platform)) return 'linux';
-
+  if (hint) {
+    return { windows: 'windows', macos: 'mac', ios: 'ios', linux: 'linux' }[hint] || 'unknown';
+  }
+  if (/Windows/i.test(userAgent) || /^Win/i.test(platform)) return 'windows';
+  if (/Macintosh|Mac OS X/i.test(userAgent) || /^Mac/i.test(platform)) return 'mac';
+  if (/Linux/i.test(userAgent) || /^Linux/i.test(platform)) return 'linux';
   return 'unknown';
+}
+
+/** Only the overview redirects. Explicit platform URLs always win. */
+export function getRedirectTarget(href, platform, page) {
+  const url = new URL(href);
+  if (page !== 'overview' || url.searchParams.has('choose')) return null;
+  if (platform !== 'windows' && platform !== 'mac') return null;
+
+  const target = new URL(`./${platform}/`, url);
+  target.search = url.search;
+  target.hash = url.hash;
+  return target.href;
 }

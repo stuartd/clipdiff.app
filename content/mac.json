@@ -1,17 +1,21 @@
 {
   "name": "Mac",
   "title": "ClipDiff for Mac",
-  "description": "Compare the last two things you copied, from a small app in your menu bar.",
-  "requirements": "macOS 13 Ventura or later.",
-  "shortcut": "⌥ + ⌘ + C",
-  "steps": [
-    "Start ClipDiff. It appears in the menu bar.",
-    "Copy the older text or text file, then copy the newer one.",
-    "Press Option + Command + C, or choose Show Diff from the ClipDiff menu."
-  ],
-  "files": "Copy two files together in Finder to compare them immediately. For Finder context-menu commands, choose Enable Finder menu in ClipDiff and enable ClipDiff Finder Integration in System Settings.",
-  "viewers": "Use the built-in side-by-side or unified view, or choose another application, including MacDiff, Kaleidoscope, Beyond Compare, or Visual Studio Code.",
-  "setup": "See the Mac project for build and setup instructions. The local release script builds ClipDiff.app and opens it. Finder integration is enabled separately in System Settings.",
+  "location": "menu bar",
+  "requirements": "macOS 13 Ventura or later",
+  "shortcut": ["⌥ Option", "⌘ Command", "C"],
+  "shortcutName": "Option + Command + C",
+  "fileManager": "Finder",
+  "executable": "ClipDiff.app",
+  "setup": "The Mac repository has the current build and setup instructions. Its local release script builds ClipDiff.app and opens it. Finder integration is enabled separately in System Settings.",
+  "installAnchor": "run-it",
+  "fileSetup": "Choose <strong>Enable Finder menu…</strong> in ClipDiff, then enable <strong>ClipDiff Finder Integration</strong> in macOS System Settings.",
+  "singleFile": "This works while monitoring is paused if a capture remains. If there is no capture, ClipDiff asks you to copy text or a file first while monitoring.",
+  "twoFiles": "Finder can launch ClipDiff for this comparison, even if it is not already running. No previous capture is needed.",
+  "viewers": "FileMerge, Kaleidoscope, Beyond Compare, or Visual Studio Code",
+  "shortcutMenu": "Change Keyboard Shortcut…",
+  "copyMenu": "Copy diff",
   "projectUrl": "https://github.com/stuartd/MacClipboardDiff",
-  "projectLabel": "Mac project on GitHub"
+  "privacyAnchor": "privacy-limitations",
+  "screenshot": null
 }
