@@ -1,13 +1,13 @@
 # clipdiff.app
 
-The ClipDiff website: plain HTML and JavaScript, with Tailwind compiled to a
-local CSS file. No framework, browser-side dependencies, CDN, or content fetches.
+The ClipDiff website: plain HTML, CSS and JavaScript. No framework, browser-side
+dependencies, CDN, or content fetches.
 All three pages are complete HTML and work without JavaScript.
 
 ## Preview
 
-The generated pages and stylesheet are checked in. To preview them without
-installing anything:
+The generated pages and handwritten stylesheet are checked in. To preview them
+without installing anything:
 
 ```sh
 node scripts/serve.mjs
@@ -24,23 +24,22 @@ You can also use `python3 -m http.server 8000 --bind 127.0.0.1`.
 Node.js 22 or later is recommended for development.
 
 ```sh
-npm ci
 npm run build
 npm test
 npm run preview
 ```
 
 `npm run build` renders the HTML from the shared template and platform content,
-then compiles Tailwind. Run it after editing copy or styles. `npm run css:watch`
-rebuilds only the stylesheet as you edit; reload the browser to see changes.
+using only Node.js built-in modules. Run it after editing copy or templates.
+Edit the CSS directly and reload the browser to see style changes. No dependency
+installation or CSS compilation is required.
 
 ```text
 templates/page.html       Shared page shell, intro layout, About, footer
 scripts/build.mjs         Shared prose, page sections, placeholder diff example
 content/windows.json      Windows copy, shortcut, requirements, and source links
 content/mac.json          Mac copy, shortcut, requirements, and source links
-assets/styles/source.css  Tailwind source and reusable styles
-assets/styles/main.css    Generated production CSS
+assets/styles/main.css    Handwritten shared stylesheet
 assets/scripts/main.js    Routing entry point and example view/copy controls
 assets/scripts/platform.js  Pure platform detection and redirect policy
 assets/images/            Real app icons; future screenshots
@@ -51,13 +50,9 @@ scripts/serve.mjs          Local preview server, bound to loopback only
 tests/                    Routing, static content, and internal-link checks
 ```
 
-Edit the sources, not the generated HTML/CSS. Platform JSON is trusted local
-content; `fileSetup` supports inline HTML for menu labels. Other copy fields are
+Edit the templates/content and rebuild the generated HTML. Edit `main.css`
+directly. Platform JSON is trusted local content; `fileSetup` supports inline HTML for menu labels. Other copy fields are
 escaped when rendered. Shared prose stays in the template/build script.
-
-Tailwind uses the [official CLI workflow](https://tailwindcss.com/docs/installation/tailwind-cli).
-Only the generated CSS is served to visitors. Dependency versions are recorded
-in `package-lock.json`.
 
 ## Routing
 
