@@ -15,7 +15,7 @@ createServer(async (request, response) => {
     }
     const url = new URL(request.url, 'http://localhost');
     const pathname = decodeURIComponent(url.pathname);
-    if (pathname.split('/').some(part => part === '..' || part.startsWith('.')) || !/^\/(?:index\.html|(?:windows|mac)(?:\/index\.html|\/)?|assets\/[^\0]+)?$/.test(pathname)) {
+    if (pathname.split('/').some(part => part === '..' || part.startsWith('.')) || !/^\/(?:index\.html|(?:windows|win|mac)(?:\/index\.html|\/)?|assets\/[^\0]+)?$/.test(pathname)) {
       response.writeHead(404).end('Not found');
       return;
     }

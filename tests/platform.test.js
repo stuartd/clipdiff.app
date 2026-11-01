@@ -6,6 +6,7 @@ const browsers = [
   ['Windows with Client Hints', { userAgentData: { platform: 'Windows' } }, 'windows'],
   ['Mac with Client Hints', { userAgentData: { platform: 'macOS' } }, 'mac'],
   ['Windows fallback', { userAgent: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64)' }, 'windows'],
+  ['Firefox on Mac', { userAgent: 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:161.0) Gecko/20100101 Firefox/161.0' }, 'mac'],
   ['Mac fallback', { userAgent: 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7)' }, 'mac'],
   ['Windows platform only', { platform: 'Win32' }, 'windows'],
   ['Mac platform only', { platform: 'MacIntel' }, 'mac'],
@@ -29,17 +30,21 @@ for (const [label, browser, expected] of browsers) {
 
 test('routes desktops from overview and preserves deep links', () => {
   assert.equal(getRedirectTarget('https://clipdiff.app/?ref=github#use', 'windows', 'overview'), 'https://clipdiff.app/windows/?ref=github#use');
-  assert.equal(getRedirectTarget('https://clipdiff.app/index.html', 'mac', 'overview'), 'https://clipdiff.app/mac/');
+  assert.equal(getRedirectTarget('https://clipdiff.app/index.html', 'mac', 'overview'), 'https://clipdiff.app/mac/#install');
 });
 
 test('supports previews hosted in a subdirectory', () => {
-  assert.equal(getRedirectTarget('https://example.com/clipdiff/', 'mac', 'overview'), 'https://example.com/clipdiff/mac/');
+  assert.equal(getRedirectTarget('https://example.com/clipdiff/', 'mac', 'overview'), 'https://example.com/clipdiff/mac/#install');
 });
 
-test('manual platform selection and overview bypass detection', () => {
+test('explicit platform URLs override OS detection', () => {
   assert.equal(getRedirectTarget('https://clipdiff.app/windows/', 'mac', 'windows'), null);
   assert.equal(getRedirectTarget('https://clipdiff.app/mac/', 'windows', 'mac'), null);
-  assert.equal(getRedirectTarget('https://clipdiff.app/?choose=1', 'mac', 'overview'), null);
+});
+
+test('homepage opens install and removes the retired chooser parameter', () => {
+  assert.equal(getRedirectTarget('https://clipdiff.app/', 'windows', 'overview'), 'https://clipdiff.app/windows/#install');
+  assert.equal(getRedirectTarget('https://clipdiff.app/?choose=1&ref=github', 'mac', 'overview'), 'https://clipdiff.app/mac/?ref=github#install');
 });
 
 test('mobile, unsupported, and concealed platforms stay on overview', () => {
