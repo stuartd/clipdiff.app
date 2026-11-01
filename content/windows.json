@@ -3,19 +3,35 @@
   "title": "ClipDiff for Windows",
   "location": "notification area",
   "requirements": "Windows 10 (1809+) or Windows 11 · x64",
-  "shortcut": ["Ctrl", "Alt", "D"],
+  "shortcut": [
+    "Ctrl",
+    "Alt",
+    "D"
+  ],
   "shortcutName": "Ctrl + Alt + D",
   "fileManager": "Explorer",
   "executable": "ClipDiff.exe",
-  "setup": "The Windows repository has the current install and update instructions. Extract the whole release ZIP and keep ClipDiff.exe beside ClipDiff.ShellExtension.dll. The self-contained build includes its .NET runtime.",
-  "installAnchor": "install-or-update",
-  "fileSetup": "ClipDiff adds the Explorer commands while it is running and <strong>Monitor Clipboard</strong> is enabled. On Windows 11, look under <strong>Show more options</strong>.",
-  "singleFile": "The command appears once ClipDiff has a current capture. Clearing that capture removes the command; pausing or quitting removes both Explorer commands.",
-  "twoFiles": "ClipDiff must already be running and monitoring. No previous capture is needed, and no administrator setup is required.",
-  "viewers": "WinMerge, Beyond Compare, Meld, or Visual Studio Code",
-  "shortcutMenu": "Keyboard shortcut...",
-  "copyMenu": "Copy unified diff",
   "projectUrl": "https://github.com/stuartd/ClipboardDiff",
-  "privacyAnchor": "privacy-model-and-limitations",
-  "screenshot": null
+  "releaseUrl": "https://github.com/stuartd/ClipboardDiff/releases/latest",
+  "install": [
+    "Download the self-contained ZIP from GitHub Releases; the runtime is included. Extract it and run ClipDiff.exe. Keep ClipDiff.ShellExtension.dll beside it.",
+    "The smaller net10 ZIP requires the x64 .NET 10 Desktop Runtime. To update, quit ClipDiff and extract to a new folder."
+  ],
+  "pathCopy": "Use Copy as path in Explorer or copy a full path from your editor. One or two absolute Windows paths are accepted, one per line, optionally double-quoted.",
+  "fileNote": "Text files up to 16 MiB are read. Binary or unusable files become a filename and reason. Windows .lnk targets are followed.",
+  "integration": {
+    "setup": "ClipDiff must already be running. On Windows 11, look under Show more options. No administrator setup is needed.",
+    "single": "Right-click a file after your first capture. The command includes the captured filename when available.",
+    "pair": "Select exactly two files; no prior capture is needed. The release DLL must be beside ClipDiff.exe."
+  },
+  "viewers": {
+    "choose": "Choose program...",
+    "discovery": "Installed tools such as WinMerge, Beyond Compare and Meld should be detected automatically. Select yours under Diff viewer.",
+    "custom": "Missing? Use Choose program... to select its executable. Custom tools must accept two file paths as arguments."
+  },
+  "privacy": {
+    "markers": "ClipDiff honours Windows clipboard exclusions for monitoring, history and cloud clipboard.",
+    "workspace": "%LOCALAPPDATA%\\ClipDiff\\Temp",
+    "anchor": "privacy-model-and-limitations"
+  }
 }

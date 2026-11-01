@@ -5,105 +5,66 @@ const read = path => readFile(new URL(path, root), 'utf8');
 const template = await read('templates/page.html');
 const platforms = Object.fromEntries(await Promise.all(['windows', 'mac'].map(async id => [id, JSON.parse(await read(`content/${id}.json`))])));
 const escape = text => String(text).replace(/[&<>"']/g, char => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[char]);
-const arrow = '<span aria-hidden="true">↗</span>';
 const keys = platform => `<span aria-label="${escape(platform.shortcutName)}">${platform.shortcut.map(key => `<kbd>${escape(key)}</kbd>`).join('<span class="key-separator" aria-hidden="true">+</span>')}</span>`;
-const link = (url, label) => `<a class="text-link" href="${escape(url)}">${label}</a>`;
+const link = (url, label) => `<a class="text-link" href="${escape(url)}">${escape(label)}</a>`;
+const paragraph = text => `<p>${escape(text)}</p>`;
 const section = (id, number, label, body) => `<section id="${id}" class="doc-section" aria-labelledby="${id}-title"><p class="section-label"><span class="section-number">${number}</span> ${label}</p><div class="section-copy">${body}</div></section>`;
+const heading = (id, text) => `<h2 id="${id}-title" class="heading">${escape(text)}</h2>`;
 
-function example(platform) {
-  if (platform?.screenshot) {
-    const shot = platform.screenshot;
-    return `<figure class="comparison"><img class="app-screenshot" src="../${escape(shot.src)}" alt="${escape(shot.alt)}" width="${shot.width}" height="${shot.height}"><figcaption class="screenshot-caption">${escape(shot.caption)}</figcaption></figure>`;
-  }
-
-  const lines = ['{', '  "service": "api",', '  "timeout": 3000,', '  "retries": 2,', '  "debug": true', '}'];
-  const current = ['{', '  "service": "api",', '  "timeout": 5000,', '  "retries": 3,', '  "debug": false', '}'];
-  const pane = (values, type) => values.map((line, i) => {
-    const changed = i >= 2 && i <= 4;
-    const content = changed ? escape(line).replace(/(3000|5000|2|3|true|false)(,?)$/, '<mark>$1</mark>$2') : escape(line);
-    return `<div class="code-line${changed ? ` ${type}` : ''}"><span class="line-number">${i + 1}</span><span class="line-sign">${changed ? (type === 'added' ? '+' : '−') : ' '}</span><span>${content}</span></div>`;
-  }).join('');
-  const unified = [
-    [' ', '{'], [' ', '  "service": "api",'],
-    ['-', '  "timeout": 3000,'], ['-', '  "retries": 2,'], ['-', '  "debug": true'],
-    ['+', '  "timeout": 5000,'], ['+', '  "retries": 3,'], ['+', '  "debug": false'], [' ', '}'],
-  ].map(([sign, line]) => `<div class="code-line${sign === '-' ? ' removed' : sign === '+' ? ' added' : ''}"><span class="line-sign">${sign}</span><span>${escape(line)}</span></div>`).join('');
-
-  return `<figure class="comparison" aria-labelledby="example-caption">
-    <div class="diff-example">
-      <div class="diff-toolbar">
-        <div class="diff-file"><span class="muted" aria-hidden="true">−/+</span> settings.json <span class="diff-description">/ example comparison</span></div>
-        <div class="diff-controls" data-demo-controls hidden>
-          <div class="diff-view-options" role="group" aria-label="Example diff view">
-            <button type="button" class="diff-mode" data-view="split" aria-pressed="true" aria-controls="example-split example-unified">Side by side</button>
-            <button type="button" class="diff-mode" data-view="unified" aria-pressed="false" aria-controls="example-split example-unified">Unified</button>
-          </div>
-          <button type="button" id="copy-example" class="copy-example">Copy diff</button>
-        </div>
-      </div>
-      <div class="diff-scroll" tabindex="0" role="region" aria-label="Example comparison; scroll horizontally on small screens">
-        <div id="example-split" class="diff-columns">
-          <div class="previous-pane"><div class="diff-heading"><span>Previous</span><span>settings.json</span></div><div class="code-pane">${pane(lines, 'removed')}</div></div>
-          <div><div class="diff-heading"><span>Current</span><span>settings.json</span></div><div class="code-pane">${pane(current, 'added')}</div></div>
-        </div>
-        <div id="example-unified" hidden class="unified-pane"><div class="diff-heading"><span>settings.json</span><span>3 removed · 3 added</span></div><div class="code-pane">${unified}</div></div>
-      </div>
-    </div>
-    <figcaption id="example-caption" class="comparison-caption"><span>Illustrative diff. ${platform ? `${escape(platform.name)} screenshot placeholder.` : 'App screenshots to follow.'}</span><span><span class="removed-label">− removed</span><span class="separator" aria-hidden="true">/</span><span class="added-label">+ added</span></span></figcaption>
-    <p id="copy-status" class="copy-status" role="status"></p>
-  </figure>`;
+function use(p) {
+  return section('use', '02', 'Use', heading('use', 'Copy. Copy. Compare.') + `
+    <p>Start ClipDiff. Copy the older value, then the newer. Use:</p>
+    <ul class="copy-types">
+      <li><strong>Text</strong> — copied from any app.</li>
+      <li><strong>A file</strong> — copy the file itself in ${p ? p.fileManager : 'Finder or Explorer'}.</li>
+      <li><strong>A path</strong> — copy the full path to a text file; ClipDiff reads its saved contents.</li>
+    </ul>
+    <p>Mix these freely, or copy two files together.</p>
+    ${p ? paragraph(p.pathCopy) : `<p>Path formats differ: ${link('windows/#use', 'Windows paths')} · ${link('mac/#use', 'Mac pathnames')}.</p>`}
+    <p>Press ${p ? keys(p) : 'the shortcut below'}, or choose <strong>Show Diff</strong> in the app menu.</p>
+    ${p ? '' : `<div class="platform-shortcuts">${Object.values(platforms).map(value => `<div><p class="shortcut-label">${value.name}</p>${keys(value)}</div>`).join('')}</div>`}
+    ${p ? `<p class="file-note">${escape(p.fileNote)}</p>` : ''}`);
 }
 
-function platformSections(p) {
-  return section('install', '01', 'Install', `
-    <h2 id="install-title" class="heading">Get ClipDiff for ${p.name}.</h2>
+function integration(p) {
+  return section('integration', '03', p ? p.fileManager : 'Finder / Explorer', heading('integration', p ? `Compare from ${p.fileManager}.` : 'Compare from Finder or Explorer.') + (p ? `
+    ${paragraph(p.integration.setup)}
+    <h3>Compare with current ClipDiff capture</h3>${paragraph(p.integration.single)}
+    <h3>Compare two selected files with ClipDiff</h3>${paragraph(p.integration.pair)}
+    <p>Both open the diff without changing your clipboard. For a pair, ${p.fileManager}’s first file is Previous.</p>` : `
+    <p>Right-click a file to compare it with your current capture, or select two files to compare directly. Your clipboard stays unchanged.</p>
+    <p>Explorer needs ClipDiff running; Finder needs its extension enabled and can launch the app.</p>
+    <p>${link('windows/#integration', 'Set up Explorer')} · ${link('mac/#integration', 'Set up Finder')}</p>`));
+}
+
+function viewers(p) {
+  return section('viewers', '04', 'Diff viewers', heading('viewers', 'Use your diff viewer.') + (p ? `
+    ${paragraph(p.viewers.discovery)}${paragraph(p.viewers.custom)}
+    <p>${link(`${p.projectUrl}#external-diff-viewers`, 'Supported viewers and setup details')}.</p>` : `
+    <p>ClipDiff should detect supported installed tools. Select one under <strong>Diff viewer</strong>, or choose an application manually.</p>
+    <p>${link('windows/#viewers', 'Windows viewer setup')} · ${link('mac/#viewers', 'Mac viewer setup')}</p>`) + `
+    <p>No diff tool? Use the default <strong>Built-in viewer</strong>: side-by-side or unified, with inline highlights, an <strong>Ignore spacing</strong> option and a command to copy the diff. It also handles external-viewer launch failures.</p>
+    ${p?.viewers.companionUrl ? `<p>Try ${link(p.viewers.companionUrl, 'MacDiff')} for a dedicated Mac viewer. The menu offers <strong>Get MacDiff…</strong> if none is detected.</p>` : ''}`);
+}
+
+function privacy(p) {
+  return section('privacy', '05', 'Privacy', heading('privacy', 'Your copies stay on your computer.') + `
+    <p>ClipDiff never uploads captures. It keeps two accepted copies and their file paths in memory, captured after startup; it cannot recover earlier clipboard history. Quitting discards them. Closing the diff window does not.</p>
+    <p>${p ? escape(p.privacy.markers) : 'Both apps honour their platform’s clipboard privacy markers.'} Unmarked secrets look like ordinary text. A clipboard clear within 60 seconds can remove the latest capture; this safeguard is best effort.</p>
+    <h3>External viewers write temporary files</h3>
+    <p>The built-in viewer keeps comparisons in memory. An external viewer needs two read-only plaintext files${p ? ` under <code>${escape(p.privacy.workspace)}</code>` : ''}. ClipDiff asks for consent before the first external comparison. Cancelling uses the built-in viewer without creating files.</p>
+    <p>ClipDiff attempts cleanup after the viewer exits, on quit and on next launch. Crashes or the viewer can leave copies behind. Use the built-in viewer to avoid this disk exposure.</p>
+    <p>Settings contain preferences, not captures. Secure memory erasure, system paging, clipboard history and other apps’ copies are outside ClipDiff’s control.</p>
+    <p>${p ? link(`${p.projectUrl}#${p.privacy.anchor}`, 'Full privacy details') : Object.values(platforms).map(value => link(`${value.projectUrl}#${value.privacy.anchor}`, `${value.name} privacy details`)).join(' · ')}</p>`);
+}
+
+function install(p) {
+  return section('install', '01', 'Install', heading('install', p ? `Get ClipDiff for ${p.name}.` : 'Choose your platform.') + (p ? `
     <p class="requirements">${escape(p.requirements)}</p>
-    <p>${escape(p.setup)}</p>
-    <p>${link(`${p.projectUrl}#${p.installAnchor}`, `${p.name} installation instructions ${arrow}`)}<span class="install-separator" aria-hidden="true">/</span>${link(p.projectUrl, 'Source on GitHub')}</p>`)
-  + section('use', '02', 'Use', `
-    <h2 id="use-title" class="heading">Copy. Copy. Compare.</h2>
-    <ol class="steps">
-      <li role="listitem" class="step"><span class="step-number" aria-hidden="true">1.</span><span>Start <code>${p.executable}</code>. It lives in your ${p.location}.</span></li>
-      <li role="listitem" class="step"><span class="step-number" aria-hidden="true">2.</span><span>Copy the older text, then copy the newer text.<br>You can copy text files too.</span></li>
-      <li role="listitem" class="step step-shortcut"><span class="step-number step-number-shortcut" aria-hidden="true">3.</span><span>Press ${keys(p)}</span></li>
-    </ol>
-    <p>Or choose <strong>Show Diff</strong> in the ClipDiff menu. Previous is on the left; current is on the right. Switch between side-by-side and unified views, and use <strong>${escape(p.copyMenu)}</strong> to copy the unified diff.</p>
-    <p class="capture-note">ClipDiff captures copies made after it starts. It retains only two captures and does not recover earlier clipboard history.</p>`)
-  + section('tricks', '03', 'Tricks', `
-    <h2 id="tricks-title" class="heading">A few useful ways to use it.</h2>
-    <div class="tips">
-      <div class="tip"><h3 class="heading">Compare two config files</h3><p>Copy one file, then the other in ${p.fileManager}, and use <strong>Show Diff</strong>. Or copy exactly two files together to make them the comparison pair. Text files contribute their contents, and the viewer shows their filenames.</p></div>
-      <div class="tip"><h3 class="heading">Compare copied text with a file</h3><p>Copy a snippet from a browser or message, then right-click a local file and choose <strong>Compare with current ClipDiff capture</strong>.</p><p>${p.fileSetup}</p><p>${p.singleFile}</p></div>
-      <div class="tip"><h3 class="heading">Compare two selected files</h3><p>Select exactly two files in ${p.fileManager}, then choose <strong>Compare two selected files with ClipDiff</strong>. ${p.twoFiles} ${p.name === 'Mac' ? 'Enable the Finder extension as described above.' : 'On Windows 11, this can be under <strong>Show more options</strong>.'}</p></div>
-      <div class="tip"><h3 class="heading">Use your usual diff viewer</h3><p>Choose an installed application from <strong>Diff viewer</strong> in the ClipDiff menu, such as ${escape(p.viewers)}. You can switch back to the built-in viewer at any time.</p><p>${link(`${p.projectUrl}#external-diff-viewers`, `Supported viewers and setup ${arrow}`)}</p></div>
-      <div class="tip"><h3 class="heading">Share the difference</h3><p>Switch to unified view and use <strong>${escape(p.copyMenu)}</strong>. Paste the diff into an issue or message instead of pasting two complete blocks.</p></div>
-      <div class="tip"><h3 class="heading">Make it fit your workflow</h3><p>Choose <strong>${escape(p.shortcutMenu)}</strong> to change the shortcut. Turn off <strong>Monitor Clipboard</strong> to pause capture, or choose <strong>Clear Captured Text</strong> to discard the two captured values without changing your clipboard.</p></div>
-    </div>
-    <p class="file-note">Comparisons are text-based. Files over <code>16 MiB</code> are not read; binary or unusable files contribute a filename and reason. ${link(`${p.projectUrl}#copied-files`, 'Encoding and fallback details')}.</p>
-    <aside class="privacy-note privacy-note-spaced" aria-labelledby="privacy-title">
-      <h3 id="privacy-title" class="heading">What happens to the text?</h3>
-      <p class="privacy-copy">ClipDiff never uploads captures. The built-in viewer keeps them in memory; quitting discards them. External viewers require temporary plaintext files, with a warning before first use and best-effort cleanup.</p>
-      <p class="privacy-copy">${link(`${p.projectUrl}#${p.privacyAnchor}`, `${p.name} privacy details ${arrow}`)}</p>
-    </aside>`);
-}
-
-function overviewSections() {
-  return section('install', '01', 'Install', `
-    <h2 id="install-title" class="heading">Two native apps. Pick yours.</h2>
-    <p>ClipDiff is available for Windows and Mac. Choose a platform for installation instructions and the details that differ between them.</p>
-    <div>${Object.entries(platforms).map(([id, p]) => `<a class="choice-row" href="${id}/"><span><span class="choice-title">ClipDiff for ${p.name}</span><span class="choice-requirements">${escape(p.requirements)}</span></span><span aria-hidden="true">→</span></a>`).join('')}</div>`)
-  + section('use', '02', 'Use', `
-    <h2 id="use-title" class="heading">Copy. Copy. Compare.</h2>
-    <p>Start ClipDiff. Copy the older text or text file, then copy the newer one. Use <strong>Show Diff</strong> in the app menu, or press the shortcut:</p>
-    <div class="platform-shortcuts">${Object.values(platforms).map(p => `<div><p class="shortcut-label">${p.name}</p>${keys(p)}</div>`).join('')}</div>
-    <p>Previous is on the left; current is on the right. Use the built-in side-by-side or unified view, or choose an installed external viewer.</p>
-    <p class="capture-note">ClipDiff captures copies made after it starts. It retains only two captures and does not recover earlier clipboard history.</p>`)
-  + section('tricks', '03', 'Tricks', `
-    <h2 id="tricks-title" class="heading">Text, files, and the bits between.</h2>
-    <p>Compare two config files, check a copied snippet against a local file, or copy a unified diff into an issue. Text files contribute their contents and the viewer shows their filenames.</p>
-    <p>Both apps support Explorer or Finder commands and external diff viewers. Setup differs by platform: ${link('windows/#tricks', 'Windows tips')} · ${link('mac/#tricks', 'Mac tips')}.</p>
-    <p class="small-copy">Comparisons are text-based. Files over <code>16 MiB</code> are not read; binary or unusable files contribute a filename and reason.</p>
-    <aside class="privacy-note" aria-labelledby="privacy-title"><h3 id="privacy-title" class="heading">What happens to the text?</h3><p class="privacy-copy">ClipDiff never uploads captures. The built-in viewer keeps them in memory; quitting discards them. External viewers require temporary plaintext files, with a warning before first use and best-effort cleanup.</p><p class="privacy-copy">Privacy details: ${link(`${platforms.windows.projectUrl}#${platforms.windows.privacyAnchor}`, 'Windows')} · ${link(`${platforms.mac.projectUrl}#${platforms.mac.privacyAnchor}`, 'Mac')}.</p></aside>`);
+    <p>${link(p.releaseUrl, 'Latest release on GitHub')}</p>
+    ${p.install.map(paragraph).join('')}
+    <p>${link(p.projectUrl, 'Source')} · ${link(`${p.projectUrl}/issues`, 'Report an issue')}</p>` : `
+    <div>${Object.entries(platforms).map(([id, value]) => `<a class="choice-row" href="${id}/"><span><span class="choice-title">ClipDiff for ${value.name}</span><span class="choice-requirements">${escape(value.requirements)}</span></span><span aria-hidden="true">→</span></a>`).join('')}</div>`));
 }
 
 for (const id of ['overview', 'windows', 'mac']) {
@@ -112,17 +73,15 @@ for (const id of ['overview', 'windows', 'mac']) {
   const values = {
     platform: id,
     base,
-    title: p ? `${p.title} — compare copied text and files` : 'ClipDiff — compare the last two things you copied',
-    description: `Compare the last two pieces of text or text files you copied. ${p ? `A native ${p.name} utility in your ${p.location}.` : 'Native apps for Windows and Mac.'} Built-in and external diff viewers.`,
+    title: p ? `${p.title} — compare copied text and files` : 'ClipDiff — compare copied text and files',
+    description: 'Copy text, a file or a path. Copy another. Compare them with your diff viewer or the built-in viewer.',
     icon: 'clipdiff.png',
+    integrationLabel: p ? p.fileManager : 'Finder / Explorer',
     headerLabel: p ? p.name.toLowerCase() : 'windows + mac',
-    eyebrow: p ? `A small ${p.name === 'Windows' ? 'Windows' : 'Mac'} ${p.location} utility` : 'A small utility for Windows &amp; Mac',
+    eyebrow: p ? `In your ${p.location}` : 'For Windows and Mac',
     platformLinks: Object.entries(platforms).map(([key, value]) => `<a class="platform-link" href="${base}${key}/"${key === id ? ' aria-current="page"' : ''}>${value.name}</a>`).join(''),
-    intro: p ? `ClipDiff lives in your ${p.location}, ready when you need it. You can copy text files too.` : 'ClipDiff lives in your Windows notification area or Mac menu bar, ready when you need it.',
-    heroAction: p ? `<div class="hero-actions hero-actions-shortcut"><a class="primary-link" href="#install">Get ClipDiff for ${p.name} <span aria-hidden="true">↓</span></a>${keys(p)}</div>` : `<div class="hero-actions"><a class="primary-link" href="windows/">ClipDiff for Windows <span aria-hidden="true">→</span></a><a class="secondary-link" href="mac/">ClipDiff for Mac <span aria-hidden="true">→</span></a></div><p class="platform-note">Two desktop apps. Choose the computer you’ll use it on.</p>`,
-    example: example(p),
-    sections: p ? platformSections(p) : overviewSections(),
-    personalLink: ` <span class="separator muted-separator" aria-hidden="true">/</span> ${link('https://stuartd.dev', `stuartd.dev ${arrow}`)}`,
+    heroAction: p ? `<div class="hero-actions"><a class="primary-link" href="#install">Get ClipDiff for ${p.name} <span aria-hidden="true">↓</span></a></div>` : `<div class="hero-actions"><a class="primary-link" href="windows/">ClipDiff for Windows <span aria-hidden="true">→</span></a><a class="secondary-link" href="mac/">ClipDiff for Mac <span aria-hidden="true">→</span></a></div>`,
+    sections: install(p) + use(p) + integration(p) + viewers(p) + privacy(p),
   };
   const html = '<!-- Generated by scripts/build.mjs from templates/page.html and content/*.json. -->\n' + template.replace(/\{\{(\w+)\}\}/g, (_, key) => {
     if (!(key in values)) throw new Error(`Unknown template value: ${key}`);
@@ -130,6 +89,6 @@ for (const id of ['overview', 'windows', 'mac']) {
   });
   const directory = p ? `${id}/` : '';
   await mkdir(new URL(directory, root), { recursive: true });
-  await writeFile(new URL(`${directory}index.html`, root), html);
+  await writeFile(new URL(`${directory}index.html`, root), html.replace(/[ \t]+$/gm, ''));
   console.log(`Built ${directory}index.html`);
 }

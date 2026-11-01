@@ -12,11 +12,20 @@ for (const page of pages) {
     const html = await readFile(new URL(page, root), 'utf8');
     assert.equal((html.match(/<h1\b/g) || []).length, 1);
     assert.ok(!/\{\{\w+\}\}/.test(html), 'No unexpanded template values');
-    for (const id of ['main', 'install', 'use', 'tricks', 'about']) {
+    for (const id of ['main', 'install', 'use', 'integration', 'viewers', 'privacy', 'about']) {
       assert.ok(html.includes(`id="${id}"`), `Static ${id} content exists`);
     }
     assert.ok(html.includes('ClipDiff never uploads captures'));
-    assert.ok(html.includes('https://stuartd.dev'));
+    assert.ok(html.includes('Copy. Copy. Compare.'));
+    assert.ok(!/example-split|data-demo-controls|copy-example|small job|Monitor Clipboard|Clear Captured Text|Visual Studio Code/.test(html));
+    const useContent = html.split('id="use"')[1].split('</section>')[0];
+    for (const kind of ['Text', 'A file', 'A path']) assert.ok(useContent.includes(`<strong>${kind}</strong>`));
+    assert.ok(!useContent.includes('earlier clipboard history'));
+    const privacyContent = html.split('id="privacy"')[1].split('</section>')[0];
+    assert.ok(privacyContent.includes('earlier clipboard history'));
+    assert.ok(privacyContent.includes('plaintext files'));
+    assert.ok(privacyContent.includes('attempts cleanup'));
+    assert.ok(privacyContent.includes('Unmarked secrets'));
     const ids = [...html.matchAll(/\bid="([^"]+)"/g)].map(match => match[1]);
     assert.equal(ids.length, new Set(ids).size, 'IDs are unique');
     const pageUrl = new URL(page, origin);
@@ -34,14 +43,23 @@ for (const page of pages) {
   });
 }
 
-test('platform-specific instructions do not cross over', async () => {
+test('platform-specific installation, paths and integrations remain distinct', async () => {
   const windows = await readFile(new URL('windows/index.html', root), 'utf8');
   const mac = await readFile(new URL('mac/index.html', root), 'utf8');
   assert.ok(windows.includes('Ctrl + Alt + D'));
-  assert.ok(windows.includes('ClipDiff must already be running and monitoring'));
-  assert.ok(!windows.includes('Enable Finder menu'));
+  assert.ok(windows.includes('https://github.com/stuartd/ClipboardDiff/releases/latest'));
+  assert.ok(windows.includes('ClipDiff.ShellExtension.dll'));
+  assert.ok(windows.includes('One or two absolute Windows paths'));
+  assert.ok(windows.includes('ClipDiff must already be running'));
+  assert.ok(windows.includes('Show more options'));
+  assert.ok(!windows.includes('Finder Menu Settings'));
   assert.ok(mac.includes('Option + Command + C'));
-  assert.ok(mac.includes('This works while monitoring is paused'));
+  assert.ok(mac.includes('https://github.com/stuartd/MacClipboardDiff/releases/latest'));
+  assert.ok(mac.includes('Download ClipDiff-macOS.zip'));
+  assert.ok(!mac.includes('No Mac release is published yet'));
+  assert.ok(mac.includes('One or two absolute paths'));
+  assert.ok(mac.includes('Finder Menu Settings…'));
   assert.ok(mac.includes('Finder can launch ClipDiff'));
+  assert.ok(mac.includes('https://github.com/stuartd/macdiff/releases/latest'));
   assert.ok(!mac.includes('Show more options'));
 });

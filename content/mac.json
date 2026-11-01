@@ -2,20 +2,36 @@
   "name": "Mac",
   "title": "ClipDiff for Mac",
   "location": "menu bar",
-  "requirements": "macOS 13 Ventura or later",
-  "shortcut": ["⌥ Option", "⌘ Command", "C"],
+  "requirements": "macOS 13 Ventura or later · Apple Silicon & Intel",
+  "shortcut": [
+    "⌥ Option",
+    "⌘ Command",
+    "C"
+  ],
   "shortcutName": "Option + Command + C",
   "fileManager": "Finder",
   "executable": "ClipDiff.app",
-  "setup": "The Mac repository has the current build and setup instructions. Its local release script builds ClipDiff.app and opens it. Finder integration is enabled separately in System Settings.",
-  "installAnchor": "run-it",
-  "fileSetup": "Choose <strong>Enable Finder menu…</strong> in ClipDiff, then enable <strong>ClipDiff Finder Integration</strong> in macOS System Settings.",
-  "singleFile": "This works while monitoring is paused if a capture remains. If there is no capture, ClipDiff asks you to copy text or a file first while monitoring.",
-  "twoFiles": "Finder can launch ClipDiff for this comparison, even if it is not already running. No previous capture is needed.",
-  "viewers": "FileMerge, Kaleidoscope, Beyond Compare, or Visual Studio Code",
-  "shortcutMenu": "Change Keyboard Shortcut…",
-  "copyMenu": "Copy diff",
   "projectUrl": "https://github.com/stuartd/MacClipboardDiff",
-  "privacyAnchor": "privacy-limitations",
-  "screenshot": null
+  "releaseUrl": "https://github.com/stuartd/MacClipboardDiff/releases/latest",
+  "install": [
+    "Download ClipDiff-macOS.zip from the latest GitHub release. Extract it, move ClipDiff.app to Applications and open it. Quit ClipDiff before updating."
+  ],
+  "pathCopy": "Use Copy as Pathname in Finder or copy full paths from your editor. One or two absolute paths are accepted, one per line, optionally double-quoted.",
+  "fileNote": "Text files up to 16 MiB are read. Finder aliases use their target’s contents. Binary files contribute a filename and “binary file” reason; other unusable files also give a reason.",
+  "integration": {
+    "setup": "Choose Finder Menu Settings… in ClipDiff, then enable ClipDiff Finder Integration in System Settings.",
+    "single": "Right-click a file. With no capture, ClipDiff asks you to copy first. The command is hidden for the file already captured.",
+    "pair": "Select exactly two files; no prior capture is needed. Finder can launch ClipDiff even when it is closed."
+  },
+  "viewers": {
+    "choose": "Choose Application…",
+    "discovery": "Tools installed in Applications, such as MacDiff, Kaleidoscope and Beyond Compare, should be detected automatically. Select yours under Diff viewer.",
+    "custom": "Missing? Use Choose Application… to select its app or executable. Custom tools must accept two file paths as arguments.",
+    "companionUrl": "https://github.com/stuartd/macdiff/releases/latest"
+  },
+  "privacy": {
+    "markers": "ClipDiff ignores concealed or transient clipboard items and marks copied diffs the same way. These markers ask compatible clipboard managers not to retain them; they cannot guarantee it.",
+    "workspace": "the system temporary directory",
+    "anchor": "privacy-limitations"
+  }
 }
