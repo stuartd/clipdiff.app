@@ -4,7 +4,7 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="description" content="Compare the last two pieces of text or text files you copied. A native Mac utility in your menu bar. Built-in and external diff viewers.">
+    <meta name="description" content="Copy text, a file or a path. Copy another. Compare them with your diff viewer or the built-in viewer.">
     <meta name="theme-color" content="#faf9f6">
     <title>ClipDiff for Mac — compare copied text and files</title>
     <link rel="icon" type="image/png" href="../assets/images/clipdiff.png">
@@ -22,86 +22,63 @@
         <nav class="section-nav" aria-label="On this page">
           <a class="nav-link" href="#install">Install</a>
           <a class="nav-link" href="#use">Use</a>
-          <a class="nav-link" href="#tricks">Tricks</a>
+          <a class="nav-link" href="#integration">Finder</a>
+          <a class="nav-link" href="#viewers">Viewers</a>
+          <a class="nav-link" href="#privacy">Privacy</a>
           <a class="nav-link" href="#about">About</a>
         </nav>
       </header>
       <main id="main">
         <section class="hero" aria-labelledby="page-title">
           <div class="hero-heading">
-            <p class="eyebrow">A small Mac menu bar utility</p>
+            <p class="eyebrow">In your menu bar</p>
             <nav class="platform-nav" aria-label="Platform"><a class="platform-link" href="../windows/">Windows</a><a class="platform-link" href="../mac/" aria-current="page">Mac</a></nav>
           </div>
           <h1 id="page-title" class="hero-title">Compare the last two<br class="title-break"> pieces of text you copied.</h1>
-          <p class="hero-intro">Copy some text. Copy some other text. Press a shortcut to see what changed. ClipDiff lives in your menu bar, ready when you need it. You can copy text files too.</p>
-          <div class="hero-actions hero-actions-shortcut"><a class="primary-link" href="#install">Get ClipDiff for Mac <span aria-hidden="true">↓</span></a><span aria-label="Option + Command + C"><kbd>⌥ Option</kbd><span class="key-separator" aria-hidden="true">+</span><kbd>⌘ Command</kbd><span class="key-separator" aria-hidden="true">+</span><kbd>C</kbd></span></div>
-          <figure class="comparison" aria-labelledby="example-caption">
-    <div class="diff-example">
-      <div class="diff-toolbar">
-        <div class="diff-file"><span class="muted" aria-hidden="true">−/+</span> settings.json <span class="diff-description">/ example comparison</span></div>
-        <div class="diff-controls" data-demo-controls hidden>
-          <div class="diff-view-options" role="group" aria-label="Example diff view">
-            <button type="button" class="diff-mode" data-view="split" aria-pressed="true" aria-controls="example-split example-unified">Side by side</button>
-            <button type="button" class="diff-mode" data-view="unified" aria-pressed="false" aria-controls="example-split example-unified">Unified</button>
-          </div>
-          <button type="button" id="copy-example" class="copy-example">Copy diff</button>
-        </div>
-      </div>
-      <div class="diff-scroll" tabindex="0" role="region" aria-label="Example comparison; scroll horizontally on small screens">
-        <div id="example-split" class="diff-columns">
-          <div class="previous-pane"><div class="diff-heading"><span>Previous</span><span>settings.json</span></div><div class="code-pane"><div class="code-line"><span class="line-number">1</span><span class="line-sign"> </span><span>{</span></div><div class="code-line"><span class="line-number">2</span><span class="line-sign"> </span><span>  &quot;service&quot;: &quot;api&quot;,</span></div><div class="code-line removed"><span class="line-number">3</span><span class="line-sign">−</span><span>  &quot;timeout&quot;: <mark>3000</mark>,</span></div><div class="code-line removed"><span class="line-number">4</span><span class="line-sign">−</span><span>  &quot;retries&quot;: <mark>2</mark>,</span></div><div class="code-line removed"><span class="line-number">5</span><span class="line-sign">−</span><span>  &quot;debug&quot;: <mark>true</mark></span></div><div class="code-line"><span class="line-number">6</span><span class="line-sign"> </span><span>}</span></div></div></div>
-          <div><div class="diff-heading"><span>Current</span><span>settings.json</span></div><div class="code-pane"><div class="code-line"><span class="line-number">1</span><span class="line-sign"> </span><span>{</span></div><div class="code-line"><span class="line-number">2</span><span class="line-sign"> </span><span>  &quot;service&quot;: &quot;api&quot;,</span></div><div class="code-line added"><span class="line-number">3</span><span class="line-sign">+</span><span>  &quot;timeout&quot;: <mark>5000</mark>,</span></div><div class="code-line added"><span class="line-number">4</span><span class="line-sign">+</span><span>  &quot;retries&quot;: <mark>3</mark>,</span></div><div class="code-line added"><span class="line-number">5</span><span class="line-sign">+</span><span>  &quot;debug&quot;: <mark>false</mark></span></div><div class="code-line"><span class="line-number">6</span><span class="line-sign"> </span><span>}</span></div></div></div>
-        </div>
-        <div id="example-unified" hidden class="unified-pane"><div class="diff-heading"><span>settings.json</span><span>3 removed · 3 added</span></div><div class="code-pane"><div class="code-line"><span class="line-sign"> </span><span>{</span></div><div class="code-line"><span class="line-sign"> </span><span>  &quot;service&quot;: &quot;api&quot;,</span></div><div class="code-line removed"><span class="line-sign">-</span><span>  &quot;timeout&quot;: 3000,</span></div><div class="code-line removed"><span class="line-sign">-</span><span>  &quot;retries&quot;: 2,</span></div><div class="code-line removed"><span class="line-sign">-</span><span>  &quot;debug&quot;: true</span></div><div class="code-line added"><span class="line-sign">+</span><span>  &quot;timeout&quot;: 5000,</span></div><div class="code-line added"><span class="line-sign">+</span><span>  &quot;retries&quot;: 3,</span></div><div class="code-line added"><span class="line-sign">+</span><span>  &quot;debug&quot;: false</span></div><div class="code-line"><span class="line-sign"> </span><span>}</span></div></div></div>
-      </div>
-    </div>
-    <figcaption id="example-caption" class="comparison-caption"><span>Illustrative diff. Mac screenshot placeholder.</span><span><span class="removed-label">− removed</span><span class="separator" aria-hidden="true">/</span><span class="added-label">+ added</span></span></figcaption>
-    <p id="copy-status" class="copy-status" role="status"></p>
-  </figure>
+          <p class="hero-intro">Text, a file, or a path. Copy another and see what changed.</p>
+          <div class="hero-actions"><a class="primary-link" href="#install">Get ClipDiff for Mac <span aria-hidden="true">↓</span></a></div>
         </section>
-        <section id="install" class="doc-section" aria-labelledby="install-title"><p class="section-label"><span class="section-number">01</span> Install</p><div class="section-copy">
-    <h2 id="install-title" class="heading">Get ClipDiff for Mac.</h2>
-    <p class="requirements">macOS 13 Ventura or later</p>
-    <p>The Mac repository has the current build and setup instructions. Its local release script builds ClipDiff.app and opens it. Finder integration is enabled separately in System Settings.</p>
-    <p><a class="text-link" href="https://github.com/stuartd/MacClipboardDiff#run-it">Mac installation instructions <span aria-hidden="true">↗</span></a><span class="install-separator" aria-hidden="true">/</span><a class="text-link" href="https://github.com/stuartd/MacClipboardDiff">Source on GitHub</a></p></div></section><section id="use" class="doc-section" aria-labelledby="use-title"><p class="section-label"><span class="section-number">02</span> Use</p><div class="section-copy">
-    <h2 id="use-title" class="heading">Copy. Copy. Compare.</h2>
-    <ol class="steps">
-      <li role="listitem" class="step"><span class="step-number" aria-hidden="true">1.</span><span>Start <code>ClipDiff.app</code>. It lives in your menu bar.</span></li>
-      <li role="listitem" class="step"><span class="step-number" aria-hidden="true">2.</span><span>Copy the older text, then copy the newer text.<br>You can copy text files too.</span></li>
-      <li role="listitem" class="step step-shortcut"><span class="step-number step-number-shortcut" aria-hidden="true">3.</span><span>Press <span aria-label="Option + Command + C"><kbd>⌥ Option</kbd><span class="key-separator" aria-hidden="true">+</span><kbd>⌘ Command</kbd><span class="key-separator" aria-hidden="true">+</span><kbd>C</kbd></span></span></li>
-    </ol>
-    <p>Or choose <strong>Show Diff</strong> in the ClipDiff menu. Previous is on the left; current is on the right. Switch between side-by-side and unified views, and use <strong>Copy diff</strong> to copy the unified diff.</p>
-    <p class="capture-note">ClipDiff captures copies made after it starts. It retains only two captures and does not recover earlier clipboard history.</p></div></section><section id="tricks" class="doc-section" aria-labelledby="tricks-title"><p class="section-label"><span class="section-number">03</span> Tricks</p><div class="section-copy">
-    <h2 id="tricks-title" class="heading">A few useful ways to use it.</h2>
-    <div class="tips">
-      <div class="tip"><h3 class="heading">Compare two config files</h3><p>Copy one file, then the other in Finder, and use <strong>Show Diff</strong>. Or copy exactly two files together to make them the comparison pair. Text files contribute their contents, and the viewer shows their filenames.</p></div>
-      <div class="tip"><h3 class="heading">Compare copied text with a file</h3><p>Copy a snippet from a browser or message, then right-click a local file and choose <strong>Compare with current ClipDiff capture</strong>.</p><p>Choose <strong>Enable Finder menu…</strong> in ClipDiff, then enable <strong>ClipDiff Finder Integration</strong> in macOS System Settings.</p><p>This works while monitoring is paused if a capture remains. If there is no capture, ClipDiff asks you to copy text or a file first while monitoring.</p></div>
-      <div class="tip"><h3 class="heading">Compare two selected files</h3><p>Select exactly two files in Finder, then choose <strong>Compare two selected files with ClipDiff</strong>. Finder can launch ClipDiff for this comparison, even if it is not already running. No previous capture is needed. Enable the Finder extension as described above.</p></div>
-      <div class="tip"><h3 class="heading">Use your usual diff viewer</h3><p>Choose an installed application from <strong>Diff viewer</strong> in the ClipDiff menu, such as FileMerge, Kaleidoscope, Beyond Compare, or Visual Studio Code. You can switch back to the built-in viewer at any time.</p><p><a class="text-link" href="https://github.com/stuartd/MacClipboardDiff#external-diff-viewers">Supported viewers and setup <span aria-hidden="true">↗</span></a></p></div>
-      <div class="tip"><h3 class="heading">Share the difference</h3><p>Switch to unified view and use <strong>Copy diff</strong>. Paste the diff into an issue or message instead of pasting two complete blocks.</p></div>
-      <div class="tip"><h3 class="heading">Make it fit your workflow</h3><p>Choose <strong>Change Keyboard Shortcut…</strong> to change the shortcut. Turn off <strong>Monitor Clipboard</strong> to pause capture, or choose <strong>Clear Captured Text</strong> to discard the two captured values without changing your clipboard.</p></div>
-    </div>
-    <p class="file-note">Comparisons are text-based. Files over <code>16 MiB</code> are not read; binary or unusable files contribute a filename and reason. <a class="text-link" href="https://github.com/stuartd/MacClipboardDiff#copied-files">Encoding and fallback details</a>.</p>
-    <aside class="privacy-note privacy-note-spaced" aria-labelledby="privacy-title">
-      <h3 id="privacy-title" class="heading">What happens to the text?</h3>
-      <p class="privacy-copy">ClipDiff never uploads captures. The built-in viewer keeps them in memory; quitting discards them. External viewers require temporary plaintext files, with a warning before first use and best-effort cleanup.</p>
-      <p class="privacy-copy"><a class="text-link" href="https://github.com/stuartd/MacClipboardDiff#privacy-limitations">Mac privacy details <span aria-hidden="true">↗</span></a></p>
-    </aside></div></section>
+        <section id="install" class="doc-section" aria-labelledby="install-title"><p class="section-label"><span class="section-number">01</span> Install</p><div class="section-copy"><h2 id="install-title" class="heading">Get ClipDiff for Mac.</h2>
+    <p class="requirements">macOS 13 Ventura or later · Apple Silicon &amp; Intel</p>
+    <p><a class="text-link" href="https://github.com/stuartd/MacClipboardDiff/releases/latest">Latest release on GitHub</a></p>
+    <p>Download ClipDiff-macOS.zip from the latest GitHub release. Extract it, move ClipDiff.app to Applications and open it. Quit ClipDiff before updating.</p>
+    <p><a class="text-link" href="https://github.com/stuartd/MacClipboardDiff">Source</a> · <a class="text-link" href="https://github.com/stuartd/MacClipboardDiff/issues">Report an issue</a></p></div></section><section id="use" class="doc-section" aria-labelledby="use-title"><p class="section-label"><span class="section-number">02</span> Use</p><div class="section-copy"><h2 id="use-title" class="heading">Copy. Copy. Compare.</h2>
+    <p>Start ClipDiff. Copy the older value, then the newer. Use:</p>
+    <ul class="copy-types">
+      <li><strong>Text</strong> — copied from any app.</li>
+      <li><strong>A file</strong> — copy the file itself in Finder.</li>
+      <li><strong>A path</strong> — copy the full path to a text file; ClipDiff reads its saved contents.</li>
+    </ul>
+    <p>Mix these freely, or copy two files together.</p>
+    <p>Use Copy as Pathname in Finder or copy full paths from your editor. One or two absolute paths are accepted, one per line, optionally double-quoted.</p>
+    <p>Press <span aria-label="Option + Command + C"><kbd>⌥ Option</kbd><span class="key-separator" aria-hidden="true">+</span><kbd>⌘ Command</kbd><span class="key-separator" aria-hidden="true">+</span><kbd>C</kbd></span>, or choose <strong>Show Diff</strong> in the app menu.</p>
+
+    <p class="file-note">Text files up to 16 MiB are read. Finder aliases use their target’s contents. Binary files contribute a filename and “binary file” reason; other unusable files also give a reason.</p></div></section><section id="integration" class="doc-section" aria-labelledby="integration-title"><p class="section-label"><span class="section-number">03</span> Finder</p><div class="section-copy"><h2 id="integration-title" class="heading">Compare from Finder.</h2>
+    <p>Choose Finder Menu Settings… in ClipDiff, then enable ClipDiff Finder Integration in System Settings.</p>
+    <h3>Compare with current ClipDiff capture</h3><p>Right-click a file. With no capture, ClipDiff asks you to copy first. The command is hidden for the file already captured.</p>
+    <h3>Compare two selected files with ClipDiff</h3><p>Select exactly two files; no prior capture is needed. Finder can launch ClipDiff even when it is closed.</p>
+    <p>Both open the diff without changing your clipboard. For a pair, Finder’s first file is Previous.</p></div></section><section id="viewers" class="doc-section" aria-labelledby="viewers-title"><p class="section-label"><span class="section-number">04</span> Diff viewers</p><div class="section-copy"><h2 id="viewers-title" class="heading">Use your diff viewer.</h2>
+    <p>Tools installed in Applications, such as MacDiff, Kaleidoscope and Beyond Compare, should be detected automatically. Select yours under Diff viewer.</p><p>Missing? Use Choose Application… to select its app or executable. Custom tools must accept two file paths as arguments.</p>
+    <p><a class="text-link" href="https://github.com/stuartd/MacClipboardDiff#external-diff-viewers">Supported viewers and setup details</a>.</p>
+    <p>No diff tool? Use the default <strong>Built-in viewer</strong>: side-by-side or unified, with inline highlights, an <strong>Ignore spacing</strong> option and a command to copy the diff. It also handles external-viewer launch failures.</p>
+    <p>Try <a class="text-link" href="https://github.com/stuartd/macdiff/releases/latest">MacDiff</a> for a dedicated Mac viewer. The menu offers <strong>Get MacDiff…</strong> if none is detected.</p></div></section><section id="privacy" class="doc-section" aria-labelledby="privacy-title"><p class="section-label"><span class="section-number">05</span> Privacy</p><div class="section-copy"><h2 id="privacy-title" class="heading">Your copies stay on your computer.</h2>
+    <p>ClipDiff never uploads captures. It keeps two accepted copies and their file paths in memory, captured after startup; it cannot recover earlier clipboard history. Quitting discards them. Closing the diff window does not.</p>
+    <p>ClipDiff ignores concealed or transient clipboard items and marks copied diffs the same way. These markers ask compatible clipboard managers not to retain them; they cannot guarantee it. Unmarked secrets look like ordinary text. A clipboard clear within 60 seconds can remove the latest capture; this safeguard is best effort.</p>
+    <h3>External viewers write temporary files</h3>
+    <p>The built-in viewer keeps comparisons in memory. An external viewer needs two read-only plaintext files under <code>the system temporary directory</code>. ClipDiff asks for consent before the first external comparison. Cancelling uses the built-in viewer without creating files.</p>
+    <p>ClipDiff attempts cleanup after the viewer exits, on quit and on next launch. Crashes or the viewer can leave copies behind. Use the built-in viewer to avoid this disk exposure.</p>
+    <p>Settings contain preferences, not captures. Secure memory erasure, system paging, clipboard history and other apps’ copies are outside ClipDiff’s control.</p>
+    <p><a class="text-link" href="https://github.com/stuartd/MacClipboardDiff#privacy-limitations">Full privacy details</a></p></div></section>
         <section id="about" class="doc-section" aria-labelledby="about-title">
-          <p class="section-label"><span class="section-number">04</span> About</p>
+          <p class="section-label"><span class="section-number">06</span> About</p>
           <div class="section-copy">
-            <h2 id="about-title" class="heading">I built it because I wanted it.</h2>
-            <p>I’m Stuart. I built ClipDiff because I wanted a quick way to compare things I’d copied. If it’s useful to you too, that makes me happy. You’re welcome to it.</p>
-            <p><a class="text-link" href="https://github.com/stuartd">Stuart on GitHub <span aria-hidden="true">↗</span></a> <span class="separator muted-separator" aria-hidden="true">/</span> <a class="text-link" href="https://stuartd.dev">stuartd.dev <span aria-hidden="true">↗</span></a></p>
-            <div class="project-links">
-              <div><p class="project-label">Windows</p><a class="text-link" href="https://github.com/stuartd/ClipboardDiff">Source</a><span class="separator" aria-hidden="true">·</span><a class="text-link" href="https://github.com/stuartd/ClipboardDiff/issues">Report an issue</a></div>
-              <div><p class="project-label">Mac</p><a class="text-link" href="https://github.com/stuartd/MacClipboardDiff">Source</a><span class="separator" aria-hidden="true">·</span><a class="text-link" href="https://github.com/stuartd/MacClipboardDiff/issues">Report an issue</a></div>
-            </div>
+            <h2 id="about-title" class="heading">About ClipDiff</h2>
+            <p>More soon.</p>
           </div>
         </section>
       </main>
       <footer class="site-footer">
-        <p>ClipDiff <span class="separator" aria-hidden="true">/</span> A small tool for a small job.</p>
+        <p>ClipDiff</p>
         <a class="nav-link" href="../?choose=1">Windows &amp; Mac <span aria-hidden="true">↑</span></a>
       </footer>
     </div>
