@@ -25,11 +25,13 @@ export function detectPlatform(browser = globalThis.navigator) {
 /** Only the overview redirects. Explicit platform URLs always win. */
 export function getRedirectTarget(href, platform, page) {
   const url = new URL(href);
-  if (page !== 'overview' || url.searchParams.has('choose')) return null;
+  if (page !== 'overview') return null;
   if (platform !== 'windows' && platform !== 'mac') return null;
 
   const target = new URL(`./${platform}/`, url);
+  // Retire the old chooser parameter; it no longer bypasses OS detection.
+  url.searchParams.delete('choose');
   target.search = url.search;
-  target.hash = url.hash;
+  target.hash = url.hash || '#install';
   return target.href;
 }
