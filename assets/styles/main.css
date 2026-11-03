@@ -1,12 +1,39 @@
 /* Shared styles for the overview, Windows and Mac pages. */
 :root {
+  color-scheme: light dark;
   --paper: #faf9f6;
   --ink: #242723;
   --muted: #656963;
   --line: #dedfd7;
   --green: #28603b;
+  --surface: #fff;
+  --nav-surface: #eeefe9;
+  --on-primary: #fff;
+  --key-shadow: #e6e7e0;
+  --tab-shadow: #24272315;
+  --selection: #d6e8d8;
+  --link-underline: rgb(40 96 59 / 35%);
+  --section-number: rgb(101 105 99 / 70%);
   --font-sans: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
   --font-mono: "SFMono-Regular", Consolas, "Liberation Mono", monospace;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --paper: #181c18;
+    --ink: #e8ece4;
+    --muted: #b0b7ad;
+    --line: #3c433d;
+    --green: #9ad3a6;
+    --surface: #2b322b;
+    --nav-surface: #20251f;
+    --on-primary: #181c18;
+    --key-shadow: #101510;
+    --tab-shadow: #0005;
+    --selection: #34553d;
+    --link-underline: rgb(154 211 166 / 50%);
+    --section-number: #8e988b;
+  }
 }
 
 /* Base elements */
@@ -24,26 +51,26 @@ button { font: inherit; color: inherit; border: 0; background: transparent; padd
 a:focus-visible, button:focus-visible, [tabindex]:focus-visible { outline: 2px solid var(--green); outline-offset: 5px; }
 strong { font-weight: 600; color: var(--ink); }
 code { font-family: var(--font-mono); font-size: .88em; overflow-wrap: anywhere; }
-kbd { display: inline-block; border: 1px solid var(--line); border-radius: .25rem; background: white; padding: .25rem .5rem; font-family: var(--font-mono); font-size: .75rem; line-height: 1.3333; color: var(--ink); box-shadow: 0 2px 0 #e6e7e0; white-space: nowrap; }
+kbd { display: inline-block; border: 1px solid var(--line); border-radius: .25rem; background: var(--surface); padding: .25rem .5rem; font-family: var(--font-mono); font-size: .75rem; line-height: 1.3333; color: var(--ink); box-shadow: 0 2px 0 var(--key-shadow); white-space: nowrap; }
 ol { padding: 0; list-style: none; }
 img { display: block; max-width: 100%; height: auto; }
 [hidden] { display: none !important; }
-::selection { background: #d6e8d8; }
+::selection { background: var(--selection); color: var(--ink); }
 
 /* Page layout and navigation */
 .shell { margin-inline: auto; max-width: 1064px; padding-inline: 1.5rem; }
-.text-link { color: var(--green); text-decoration: underline; text-decoration-color: rgb(40 96 59 / 35%); }
+.text-link { color: var(--green); text-decoration: underline; text-decoration-color: var(--link-underline); }
 .text-link:hover { text-decoration-color: var(--green); }
 .eyebrow { font-family: var(--font-mono); font-size: 11px; text-transform: uppercase; letter-spacing: .13em; color: var(--muted); }
 .platform-link { display: inline-flex; align-items: center; justify-content: center; gap: .5rem; padding: .375rem .875rem; font-size: .875rem; line-height: 1.4286; color: var(--muted); transition: color .15s, background-color .15s; }
 .platform-link:hover, .nav-link:hover { color: var(--ink); }
-.platform-link[aria-current="page"] { border-radius: .375rem; background: white; color: var(--ink); box-shadow: 0 1px 3px #24272315; }
-.primary-link { display: inline-flex; align-items: center; justify-content: center; gap: 1.25rem; border-radius: .375rem; background: var(--ink); padding: .75rem 1.25rem; font-size: .875rem; line-height: 1.4286; font-weight: 500; color: white; }
+.platform-link[aria-current="page"] { border-radius: .375rem; background: var(--surface); color: var(--ink); box-shadow: 0 1px 3px var(--tab-shadow); }
+.primary-link { display: inline-flex; align-items: center; justify-content: center; gap: 1.25rem; border-radius: .375rem; background: var(--ink); padding: .75rem 1.25rem; font-size: .875rem; line-height: 1.4286; font-weight: 500; color: var(--on-primary); }
 .primary-link:hover { background: var(--green); }
 .secondary-link:hover { border-color: var(--ink); }
 .doc-section { display: grid; gap: 1.25rem; border-top: 1px solid var(--line); padding-block: 2.5rem; }
 .section-label { display: flex; align-items: baseline; gap: .75rem; font-family: var(--font-mono); font-size: .75rem; line-height: 1.3333; color: var(--muted); }
-.section-number { color: rgb(101 105 99 / 70%); }
+.section-number { color: var(--section-number); }
 .section-copy { max-width: 650px; color: var(--muted); }
 .section-copy > * + * { margin-top: 1.25rem; }
 .heading { color: var(--ink); }
@@ -58,7 +85,7 @@ img { display: block; max-width: 100%; height: auto; }
 .section-nav { display: flex; flex-wrap: wrap; gap: .5rem 1.5rem; font-size: 13px; color: var(--muted); }
 .hero { padding-block: 3rem; }
 .hero-heading { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 1rem; margin-bottom: 1.5rem; }
-.platform-nav { display: inline-flex; border: 1px solid var(--line); border-radius: .5rem; background: #eeefe9; padding: .25rem; }
+.platform-nav { display: inline-flex; border: 1px solid var(--line); border-radius: .5rem; background: var(--nav-surface); padding: .25rem; }
 .hero-title { max-width: 860px; font-size: 40px; line-height: 1.09; font-weight: 600; letter-spacing: -.045em; }
 .title-break { display: none; }
 .hero-intro { margin-top: 1.5rem; max-width: 620px; font-size: 17px; line-height: 1.625; color: var(--muted); }
@@ -75,7 +102,7 @@ img { display: block; max-width: 100%; height: auto; }
 .hero-actions { display: flex; flex-wrap: wrap; align-items: center; gap: .75rem; margin-top: 1.75rem; }
 .secondary-link { display: inline-flex; align-items: center; gap: 1.25rem; border: 1px solid var(--line); border-radius: .375rem; padding: .75rem 1.25rem; font-size: .875rem; line-height: 1.4286; font-weight: 500; }
 
-.skip-link:focus { position: fixed; top: .75rem; left: .75rem; z-index: 50; width: auto; height: auto; margin: 0; overflow: visible; clip: auto; white-space: normal; background: white; padding: .75rem; }
+.skip-link:focus { position: fixed; top: .75rem; left: .75rem; z-index: 50; width: auto; height: auto; margin: 0; overflow: visible; clip: auto; white-space: normal; background: var(--surface); padding: .75rem; }
 
 /* Responsive layout */
 @media (min-width: 640px) {
